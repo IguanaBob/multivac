@@ -121,14 +121,27 @@ role_of() {
   else printf '%sSPARE%s' "$G" "$Z"; fi
 }
 
+scsi_addr() {
+  local tgt
+  [[ -e /sys/class/block/$1/device ]] || { printf -- '-'; return; }
+  tgt=$(basename "$(readlink -f "/sys/class/block/$1/device")")
+  [[ $tgt =~ ^[0-9]+:[0-9]+:[0-9]+:[0-9]+$ ]] && printf '%s' "$tgt" || printf -- '-'
+}
+dm_of() {
+  local resolved
+  [[ -n ${LUKS_ON[$1]:-} ]] || { printf -- '-'; return; }
+  resolved=$(readlink -f "/dev/mapper/${LUKS_ON[$1]}" 2>/dev/null)
+  printf '%s' "${resolved##*/}"
+}
+
 list_disks() {
   hd "Block devices"
-  printf '%-5s %-5s %-8s %-18s %-22s %s\n' DISK TRAN SIZE MODEL SERIAL ROLE
+  printf '%-5s %-5s %-8s %-18s %-22s %-9s %-7s %s\n' DISK TRAN SIZE MODEL SERIAL SCSI DM ROLE
   local line NAME TRAN SIZE MODEL SERIAL
   while IFS= read -r line; do
     eval "$line"
-    printf '%-5s %-5s %-8s %-18.18s %-22.22s %s\n' \
-      "$NAME" "${TRAN:--}" "$SIZE" "${MODEL:--}" "${SERIAL:--}" "$(role_of "$NAME")"
+    printf '%-5s %-5s %-8s %-18.18s %-22.22s %-9s %-7s %s\n' \
+      "$NAME" "${TRAN:--}" "$SIZE" "${MODEL:--}" "${SERIAL:--}" "$(scsi_addr "$NAME")" "$(dm_of "$NAME")" "$(role_of "$NAME")"
   done < <(lsblk -dn -P -o NAME,TRAN,SIZE,MODEL,SERIAL)
 }
 
