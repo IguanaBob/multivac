@@ -1,4 +1,5 @@
 # raid.conf.example — copy to raid.conf and edit for your system:
+# SPDX-License-Identifier: AGPL-3.0-or-later
 #     cp raid.conf.example raid.conf && chmod 600 raid.conf
 #
 # This file is SOURCED as bash by raid-tool.sh and unlock-raid.sh, so it can
