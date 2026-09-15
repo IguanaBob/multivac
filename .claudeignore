@@ -1,0 +1,27 @@
+# ---- multivac: keep AI tools away from anything with real identifiers ----
+# raid.conf contains LUKS UUIDs and drive serials — never send it to an
+# assistant. The safe-to-read template is raid.conf.example.
+raid.conf
+raid.*.conf
+!raid.conf.example
+
+*.local
+*.local.*
+*.secret
+secrets.*
+
+# Operational output (drive serials, device paths leak into these)
+badblocks_*.log
+*.log
+scrub-*.txt
+
+# Noise that wastes context, not secret but not useful
+.git/
+*.swp
+*~
+.DS_Store
+.idea/
+.vscode/
+*.bak
+*.orig
+*.tmp

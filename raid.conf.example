@@ -1,0 +1,38 @@
+# raid.conf.example — copy to raid.conf and edit for your system:
+#     cp raid.conf.example raid.conf && chmod 600 raid.conf
+#
+# This file is SOURCED as bash by raid-tool.sh and unlock-raid.sh, so it can
+# define arrays. Keep it root-owned and not world-writable. Override its
+# location with the RAID_CONF environment variable.
+
+# Cosmetic label shown in menus and messages.
+RAID_LABEL="MYARRAY"
+
+# Primary btrfs mountpoint of the array.
+RAID_MNT="/mnt/raid"
+
+# Every mountpoint to mount on unlock / unmount on lock (first is usually
+# RAID_MNT). Add bind or extra subvol mounts here. Each needs an fstab entry.
+RAID_MOUNTS=(/mnt/raid)
+
+# systemd unit to start on unlock and stop on lock. Set to "" to disable.
+RAID_NFS_UNIT="nfs-server"
+
+# Refuse removing a member below this device count. RAID1C3 needs 3;
+# set to your profile's minimum (RAID1=2, RAID1C4=4, ...).
+RAID_MIN_DEVICES=3
+
+# cryptsetup luksFormat options for NEW drives added via the tool. Defaults
+# are fine (aes-xts-plain64, LUKS2, argon2id). Do NOT set --sector-size
+# unless your drives specifically need it.
+RAID_LUKS_FORMAT_OPTS=(--type luks2)
+
+# Array members: LUKS header UUID -> mapper name to open it as.
+#   Get a UUID:  blkid -o value -s UUID /dev/sdX1
+#   Mapper name is yours to choose; a descriptive convention helps, e.g.
+#   luks_<size>_<bus>_<model>_<serial>
+declare -A RAID_MEMBERS=(
+  [00000000-0000-0000-0000-000000000001]=luks_data_disk_1
+  [00000000-0000-0000-0000-000000000002]=luks_data_disk_2
+  [00000000-0000-0000-0000-000000000003]=luks_data_disk_3
+)

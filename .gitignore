@@ -1,0 +1,35 @@
+# ---- multivac ----------------------------------------------------------
+# Real site config: holds LUKS header UUIDs, drive serials, mountpoints.
+# NEVER commit. The tracked template is raid.conf.example.
+raid.conf
+raid.*.conf
+!raid.conf.example
+
+# Any other local/secret configs
+*.local
+*.local.*
+*.secret
+secrets.*
+
+# Runtime / operational artifacts the tools produce
+badblocks_*.log
+*.log
+scrub-*.txt
+
+# Editor & OS cruft
+*.swp
+*.swo
+*~
+.*.swp
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.bak
+*.orig
+*.tmp
+
+# Shell / test noise
+.shellcheck-cache/
+core
+core.*
