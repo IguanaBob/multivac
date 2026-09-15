@@ -343,7 +343,12 @@ manage_add() {
   say  "   [$partuuid]=$mapper"
   local b
   read -rp "Run a data balance now to spread existing data? [y/N] " b
-  if [[ $b == y ]]; then btrfs balance start -dlimit=20 "$RAID_MNT" & ok "balance started (limited); watch via option 7"; fi
+  if [[ $b == y ]]; then
+    if btrfs balance start --bg -dlimit=20 "$RAID_MNT"; then
+      ok "balance started (limited, running in background)"
+      say "Check progress: menu → 7 → 3, or run: btrfs balance status $RAID_MNT"
+    fi
+  fi
   pause
 }
 
@@ -408,10 +413,20 @@ action_balance() {
   say "  1) start (data, limited: -dlimit=20)   2) start (full data)   3) status   4) cancel"
   read -rp "> " b
   case $b in
-    1) btrfs balance start -dlimit=20 "$RAID_MNT" & ok "started (limited)";;
+    1) if btrfs balance start --bg -dlimit=20 "$RAID_MNT"; then
+         ok "started (limited, running in background)"
+         say "Check progress: menu → 7 → 3, or run: btrfs balance status $RAID_MNT"
+       fi ;;
     2) local f
        read -rp "Full balance can run long. Type BALANCE: " f
-       if [[ $f == BALANCE ]]; then btrfs balance start "$RAID_MNT" & ok "started"; else err "cancelled"; fi ;;
+       if [[ $f == BALANCE ]]; then
+         if btrfs balance start --bg "$RAID_MNT"; then
+           ok "started (running in background)"
+           say "Check progress: menu → 7 → 3, or run: btrfs balance status $RAID_MNT"
+         fi
+       else
+         err "cancelled"
+       fi ;;
     3) btrfs balance status "$RAID_MNT";;
     4) btrfs balance cancel "$RAID_MNT" && ok "cancelled";;
     *) err "cancelled";;
