@@ -36,7 +36,7 @@ distro-specific beyond systemd unit names (configurable).
 ## Install
 
 ```sh
-git clone https://github.com/<you>/multivac
+git clone https://github.com/IguanaBob/multivac
 cd multivac
 cp raid.conf.example raid.conf
 chmod 600 raid.conf          # it will hold LUKS UUIDs and drive serials
@@ -103,6 +103,18 @@ optionally wipes signatures. It refuses to drop below `RAID_MIN_DEVICES`.
   drive a scriptable core rather than scraping menu text.
 - Subcommands (`multivac status`, `multivac unlock`, …) alongside the menu.
 - A defined passphrase channel (stdin/keyfile) for headless/automated use.
+
+## Contributing
+
+This started as a personal tool for one specific array, so scope is
+deliberately narrow. PRs are welcome, but read [CLAUDE.md](CLAUDE.md) first —
+especially the safety invariants section — since anything that weakens a
+guardrail there won't be merged even if it "works."
+
+## Contact
+
+Found a bug, security issue, or just want to reach out? Email
+ib_gh_private_1o3naoi3aj3@foobox.com.
 
 ## License
 

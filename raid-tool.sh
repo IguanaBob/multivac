@@ -213,7 +213,7 @@ action_lock() {
   local f; read -rp "Type LOCK to proceed: " f
   [[ $f == LOCK ]] || { err "cancelled"; pause; return; }
   if [[ -n $RAID_NFS_UNIT ]]; then
-    systemctl stop "$RAID_NFS_UNIT" 2>/dev/null && ok "stopped $RAID_NFS_UNIT" || warn "$RAID_NFS_UNIT not stopped (was it running?)"
+    if systemctl stop "$RAID_NFS_UNIT" 2>/dev/null; then ok "stopped $RAID_NFS_UNIT"; else warn "$RAID_NFS_UNIT not stopped (was it running?)"; fi
   fi
   local mp busy=0
   for mp in "${RAID_MOUNTS[@]}"; do
