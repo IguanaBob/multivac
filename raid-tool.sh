@@ -447,7 +447,7 @@ menu() {
 
   1) List all drives
   2) Array status
-  3) Test a drive (badblocks)
+  3) Test a drive (badblocks) — write mode is DESTRUCTIVE
   4) Scrub (start/status/stop)
   5) Manage drives (format / add / remove)
   6) SMART health
